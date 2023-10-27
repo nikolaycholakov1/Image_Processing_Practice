@@ -2,13 +2,50 @@
 <html>
 <head>
     <title>Image Processing</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>Image Processing</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Upload and Process</button>
-    </form>
+    <div class="container mt-5">
+        <h1 class="text-center">Image Processing</h1>
+        <form method="post" enctype="multipart/form-data" class="mt-4">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.image.label_tag }}
+                {{ form.image }}
+            </div>
+            <button type="submit" class="btn btn-primary">Upload and Process</button>
+        </form>
+
+        <!-- Display selected image -->
+        <div class="mt-4" id="selected-image-container" style="display: none;">
+            <h2>Selected Image</h2>
+            <img id="selected-image" class="img-fluid" alt="Selected Image">
+        </div>
+    </div>
+
+    <!-- JavaScript to display the selected image -->
+    <script>
+        const inputImage = document.querySelector('#id_image');
+        const selectedImageContainer = document.querySelector('#selected-image-container');
+        const selectedImage = document.querySelector('#selected-image');
+
+        inputImage.addEventListener('change', () => {
+            const file = inputImage.files[0];
+            if (file) {
+                selectedImageContainer.style.display = 'block';
+                const imageUrl = URL.createObjectURL(file);
+                selectedImage.src = imageUrl;
+            } else {
+                selectedImageContainer.style.display = 'none';
+                selectedImage.src = '';
+            }
+        });
+    </script>
+
+    <!-- Add Bootstrap JS (optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

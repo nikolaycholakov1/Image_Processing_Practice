@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
 from .models import UploadedImage
@@ -22,7 +22,14 @@ class ImageProcessView(FormView):
         # Save the processed image
         buffer = BytesIO()
         processed_img.save(buffer, format='JPEG')
-        processed_image = InMemoryUploadedFile(buffer, None, 'processed.jpg', 'image/jpeg', buffer.tell(), None)
+        processed_image = InMemoryUploadedFile(
+            buffer,
+            None,
+            'processed.jpg',
+            'image/jpeg',
+            buffer.tell(),
+            None
+        )
         uploaded_image.processed_image = processed_image
         uploaded_image.save()
 

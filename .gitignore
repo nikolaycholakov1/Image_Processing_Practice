@@ -1,0 +1,55 @@
+# Django project-specific files
+*.pyc
+__pycache__
+db.sqlite3
+
+# Virtual environment
+venv/
+.env
+
+# IDE files
+.vscode/
+*.pyproj
+*.suo
+*.user
+*.sln
+*.vscode/
+*.idea/
+.idea/
+
+# Compiled Python files
+*.pyc
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# Static and media files (if using the collectstatic command)
+/static/
+/media/
+
+# Secret key
+*.secret_key
+
+# Compiled Python files
+__pycache__/
+
+# System and temporary files
+.DS_Store
+Thumbs.db
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Editor-specific files
+*.swp
+*.swo
+
+# Ignore local settings file
+/local_settings.py
+
+# Ignore migrations if not using South or Django 1.7+ built-in migrations
+/migrations/
+
+pillow_options

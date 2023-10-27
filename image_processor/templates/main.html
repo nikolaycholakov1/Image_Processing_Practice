@@ -1,26 +1,69 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Image Processing</title>
-    <!-- Add Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container mt-5">
-        <h1 class="text-center">Image Processing</h1>
-        <form method="post" enctype="multipart/form-data" class="mt-4">
-            {% csrf_token %}
-            <div class="form-group">
-                {{ form.image.label_tag }}
-                {{ form.image }}
-            </div>
-            <button type="submit" class="btn btn-primary">Upload and Process</button>
-        </form>
+{% extends "base.html" %}
 
-        <!-- Display selected image -->
-        <div class="mt-4" id="selected-image-container" style="display: none;">
-            <h2>Selected Image</h2>
-            <img id="selected-image" class="img-fluid" alt="Selected Image">
+{% block title %}Main Page{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <!-- Filter Effects Options (Left Column) -->
+        <div style="margin-left: -300px" class="col-md-auto">
+            <h2>Choose Filter Effect:</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="filter_effect" id="gaussian" value="gaussian">
+                    <label class="form-check-label" for="gaussian">
+                        Gaussian Blur
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="filter_effect" id="box" value="box">
+                    <label class="form-check-label" for="box">
+                        Box Blur
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="filter_effect" id="unsharp" value="unsharp">
+                    <label class="form-check-label" for="unsharp">
+                        Unsharp Mask
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="filter_effect" id="median" value="median">
+                    <label class="form-check-label" for="median">
+                        Median Filter
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="filter_effect" id="min" value="min">
+                    <label class="form-check-label" for="min">
+                        Min Filter
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="filter_effect" id="max" value="max">
+                    <label class="form-check-label" for="max">
+                        Max Filter
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary mt-4">Upload and Process</button>
+            </form>
+        </div>
+
+        <!-- Image Display (Right Column) -->
+        <div style="margin-left: 50px" class="col-md-8">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.image.label_tag }}
+                    {{ form.image }}
+                </div>
+            </form>
+
+            <!-- Display selected image -->
+            <div class="mt-4" id="selected-image-container" style="display: none;">
+                <h2>Selected Image</h2>
+                <img id="selected-image" class="img-fluid" alt="Selected Image">
+            </div>
         </div>
     </div>
 
@@ -42,10 +85,4 @@
             }
         });
     </script>
-
-    <!-- Add Bootstrap JS (optional) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Processed Image</title>
+</head>
+<body>
+    <h1>Processed Image</h1>
+    <img src="{{ form.instance.processed_image.url }}" alt="Processed Image">
+    <br>
+    <a href="{% url 'image_processor:upload_and_process' %}">Back to Main Page</a>
+</body>
+</html>

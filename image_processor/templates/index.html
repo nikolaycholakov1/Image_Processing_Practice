@@ -1,4 +1,4 @@
-{% extends "index.html" %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %}Main Page{% endblock %}
@@ -31,6 +31,7 @@
         <h2>Selected Image</h2>
         <img id="selected-image" class="img-fluid" alt="Selected Image">
     </div>
+
 
     <script src="{% static 'js/image_upload_for_main.js' %}"></script>
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "index.html" %}
+{% extends "base.html" %}
 
 {% block title %}Processed Image{% endblock %}
 
@@ -8,5 +8,8 @@
         <a href="{% url 'image_processor:upload_and_process' %}" class="btn btn-primary">Back to Main Page</a>
         <hr>
         <img style="width: 80vw; height: 80vh" src="{{ form.instance.processed_image.url }}" alt="Processed Image">
+
+
+
     </div>
 {% endblock %}

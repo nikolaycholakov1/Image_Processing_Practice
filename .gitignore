@@ -53,3 +53,8 @@ __pycache__/
 /migrations/
 
 pillow_options
+
+# Ignore all images (jpg, png, gif) in the media folder
+/media/*.jpg
+/media/*.png
+/media/*.gif

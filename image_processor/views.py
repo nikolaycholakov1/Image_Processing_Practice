@@ -8,50 +8,92 @@ from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
+# class ImageProcessView(FormView):
+#     form_class = ImageUploadForm
+#     template_name = 'main.html'
+#
+#     def form_valid(self, form):
+#         uploaded_image = form.save()
+#         filter_effect = self.request.POST.get('filter_effect')
+#
+#         # Clear the processed_image field when a new image is processed
+#         if uploaded_image.processed_image:
+#             uploaded_image.processed_image.delete()
+#
+#         # Process the uploaded image using the selected filter effect
+#         img = Image.open(uploaded_image.image.path)
+#         if filter_effect == 'gaussian':
+#             processed_img = img.filter(ImageFilter.GaussianBlur(2))
+#         elif filter_effect == 'box':
+#             processed_img = img.filter(ImageFilter.BoxBlur(2))
+#         elif filter_effect == 'unsharp':
+#             processed_img = img.filter(ImageFilter.UnsharpMask(radius=2, percent=150, threshold=3))
+#         elif filter_effect == 'median':
+#             processed_img = img.filter(ImageFilter.MedianFilter(size=3))
+#         elif filter_effect == 'min':
+#             processed_img = img.filter(ImageFilter.MinFilter(size=3))
+#         elif filter_effect == 'max':
+#             processed_img = img.filter(ImageFilter.MaxFilter(size=3))
+#
+#         # Save the processed image
+#         buffer = BytesIO()
+#         processed_img.save(buffer, format='JPEG')
+#         processed_image = InMemoryUploadedFile(
+#             buffer,
+#             None,
+#             'processed.jpg',
+#             'image/jpeg',
+#             buffer.tell(),
+#             None
+#         )
+#         uploaded_image.processed_image = processed_image
+#         uploaded_image.filter_effect = filter_effect  # Store the chosen filter effect
+#         uploaded_image.save()
+#
+#         # Redirect to the display view with the pk of the processed image
+#         return redirect('image_processor:display_image', pk=uploaded_image.pk)
 class ImageProcessView(FormView):
     form_class = ImageUploadForm
     template_name = 'main.html'
 
     def form_valid(self, form):
         uploaded_image = form.save()
-        filter_effect = self.request.POST.get('filter_effect')  # Get the selected filter effect
+        filter_effect = self.request.POST.get('filter_effect')
 
-        # Clear the processed_image field when a new image is processed
-        if uploaded_image.processed_image:
-            uploaded_image.processed_image.delete()
+        # Validation to ensure filter_effect is a valid choice
+        filter_effects = {
+            'gaussian': ImageFilter.GaussianBlur(2),
+            'box': ImageFilter.BoxBlur(2),
+            'unsharp': ImageFilter.UnsharpMask(radius=2, percent=150, threshold=3),
+            'median': ImageFilter.MedianFilter(size=3),
+            'min': ImageFilter.MinFilter(size=3),
+            'max': ImageFilter.MaxFilter(size=3),
+        }
 
-        # Process the uploaded image using the selected filter effect
-        img = Image.open(uploaded_image.image.path)
-        if filter_effect == 'gaussian':
-            processed_img = img.filter(ImageFilter.GaussianBlur(2))
-        elif filter_effect == 'box':
-            processed_img = img.filter(ImageFilter.BoxBlur(2))
-        elif filter_effect == 'unsharp':
-            processed_img = img.filter(ImageFilter.UnsharpMask(radius=2, percent=150, threshold=3))
-        elif filter_effect == 'median':
-            processed_img = img.filter(ImageFilter.MedianFilter(size=3))
-        elif filter_effect == 'min':
-            processed_img = img.filter(ImageFilter.MinFilter(size=3))
-        elif filter_effect == 'max':
-            processed_img = img.filter(ImageFilter.MaxFilter(size=3))
+        filter_function = filter_effects.get(filter_effect)
 
-        # Save the processed image
-        buffer = BytesIO()
-        processed_img.save(buffer, format='JPEG')
-        processed_image = InMemoryUploadedFile(
-            buffer,
-            None,
-            'processed.jpg',
-            'image/jpeg',
-            buffer.tell(),
-            None
-        )
-        uploaded_image.processed_image = processed_image
-        uploaded_image.filter_effect = filter_effect  # Store the chosen filter effect
-        uploaded_image.save()
+        if filter_function:
+            img = Image.open(uploaded_image.image.path)
+            processed_img = img.filter(filter_function)
 
-        # Redirect to the display view with the pk of the processed image
-        return redirect('image_processor:display_image', pk=uploaded_image.pk)
+            # Save the processed image
+            buffer = BytesIO()
+            processed_img.save(buffer, format='JPEG')
+
+            processed_image = InMemoryUploadedFile(
+                buffer,
+                None,
+                'processed.jpg',
+                'image/jpeg',
+                buffer.tell(),
+                None
+            )
+
+            uploaded_image.processed_image = processed_image
+            uploaded_image.filter_effect = filter_effect
+            uploaded_image.save()
+
+            return redirect('image_processor:display_image', pk=uploaded_image.pk)
 
 
 class ImageDisplayView(TemplateView):
@@ -62,4 +104,7 @@ class ImageDisplayView(TemplateView):
         image_id = self.kwargs['pk']
         uploaded_image = UploadedImage.objects.get(pk=image_id)
         form = self.form_class(instance=uploaded_image)
-        return self.render_to_response({'form': form})
+        context = {
+            "form": form
+        }
+        return self.render_to_response(context)
